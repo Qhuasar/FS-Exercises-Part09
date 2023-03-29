@@ -3,7 +3,7 @@ interface BmiValues {
   weight: number;
 }
 
-const  parseArgs = (args: string[]): BmiValues => {
+const parseArgs = (args: string[]): BmiValues => {
   if (args.length < 4) throw new Error('Not enough arguments');
   if (args.length > 4) throw new Error('Too many arguments');
   if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
@@ -15,12 +15,13 @@ const  parseArgs = (args: string[]): BmiValues => {
   throw new Error('only accepts numbers');
 };
 
-const bmiCalculator = (height: number, weight: number): string => {
+export const bmiCalculator = (height: number, weight: number): string => {
   if (!isNaN(height) && !isNaN(weight)) {
     if (height === 0) {
       throw new Error("Can't divide by zero ");
     }
-    const result = Number(weight) / (Number(height) * Number(height));
+    const result =
+      Number(weight) / (Number(height / 100) * Number(height / 100));
     if (result < 18.5) return 'Underweight (low weight)';
     if (result >= 18.5 && result < 24.9) return 'Normal(healthy weight) ';
     if (result > 25) return 'Overweight(high weight)';
