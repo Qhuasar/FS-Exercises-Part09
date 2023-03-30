@@ -1,6 +1,8 @@
-import { PatientEntry } from "../types";
+import { PatientEntry } from '../types';
+import parsePatient from '../utlis/parsePatient';
 
-const data: PatientEntry[] = [
+
+const initialData = [
   {
     id: 'd2773336-f723-11e9-8f0b-362b9e155667',
     name: 'John McClane',
@@ -42,5 +44,7 @@ const data: PatientEntry[] = [
     occupation: 'Digital evangelist',
   },
 ];
+
+const data: PatientEntry[] = initialData.map((pat) => parsePatient(pat));
 
 export default data;
