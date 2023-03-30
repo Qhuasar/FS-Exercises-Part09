@@ -1,6 +1,7 @@
 import express from 'express';
 import { bmiCalculator } from './bmiCalculator';
 import cors from 'cors';
+import { calculateExercises, isNaNArray } from './exerciseCalculator';
 const app = express();
 
 app.use(cors());
@@ -17,16 +18,42 @@ app.get('/bmi', (req, res) => {
       res.status(400).json({ error: 'malformatted parameters' });
     }
     const bmi = bmiCalculator(Number(height), Number(weight));
-    res.json({
+    return res.json({
       height,
       weight,
       bmi,
     });
-  } catch (error) {
-    res.status(500).json({ error });
+  } catch (error: unknown) {
+    if (error instanceof Error) return res.status(500).json({ error });
+    return res.status(500).end();
   }
 });
 
-app.listen(3000, () => {
-  console.log('LIstening on port 3000');
+app.post('/exercises', (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { daily_exercises, target } = req.body;
+  if (
+    daily_exercises === undefined ||
+    target === undefined ||
+    daily_exercises === null ||
+    target === null
+  )
+    return res.status(400).json({ error: 'parameters missing' });
+  if (!isNaNArray(daily_exercises as number[]) || isNaN(Number(target))) {
+    return res.status(400).json({ error: 'malformatted parameters' });
+  }
+  try {
+    const scheduleResult = calculateExercises(
+      daily_exercises as number[],
+      Number(target)
+    );
+    return res.json(scheduleResult);
+  } catch (error) {
+    if (error instanceof Error) return res.status(500).json({ error: error });
+    return res.status(500).end();
+  }
+});
+
+app.listen(3002, () => {
+  console.log('LIstening on port 3002');
 });

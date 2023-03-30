@@ -11,7 +11,7 @@ interface Schedule {
   ratingDescrp: RatingsDescription;
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   avgDailyExercise: number[],
   target: number
 ): Schedule => {
@@ -29,7 +29,7 @@ const calculateExercises = (
     }, 0) / avgDailyExercise.length;
 
   let targetReached = false;
-  let rating: Ratings = null;
+  let rating: Ratings;
   const ratio = (avgTime / target) * 100;
   if (ratio < 100) {
     rating = 1;
@@ -45,7 +45,10 @@ const calculateExercises = (
   } else if (ratio >= 170) {
     targetReached = true;
     rating = 3;
+  } else {
+    throw new Error('Sorry could not retrive your rating');
   }
+
   let ratingDescrp: RatingsDescription = 'bad';
   switch (rating) {
     case 1:
@@ -77,12 +80,12 @@ const calculateExercises = (
   };
 };
 
-const testData = [3, 0, 2, 4.5, 0, 3, 1];
+//const testData = [3, 0, 2, 4.5, 0, 3, 1];
 
 const parseArrayArgs = (args: string[]): number[] => {
   if (args.length < 4) throw new Error('Not enough arguments');
   const argumnets = args.slice(2);
-  let numArray: number[] = argumnets.map((arg) => {
+  const numArray: number[] = argumnets.map((arg) => {
     if (isNaN(Number(arg))) {
       throw new Error('function only accepts numbers as arguments');
     } else {
@@ -91,7 +94,6 @@ const parseArrayArgs = (args: string[]): number[] => {
   });
   return numArray;
 };
-
 
 try {
   const [target, ...dailyExercise] = parseArrayArgs(process.argv);
@@ -104,3 +106,15 @@ try {
   }
   console.log(errorMessage);
 }
+
+export const isNaNArray = (array: number[]): boolean => {
+  if (!(array instanceof Array)) return false;
+  let isNANArray = true;
+  array.forEach((num) => {
+    console.log(isNaN(Number(num)));
+    if (isNaN(Number(num))) {
+      if (!Number(num) && Number(num) !== 0) isNANArray = false;
+    }
+  });
+  return isNANArray;
+};
