@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import { getAllPatients } from './services/patients';
+import { getAllDiagnoses } from './services/diagnoses';
 
 const app = express();
 
@@ -9,6 +11,14 @@ app.use(cors());
 
 app.get('/api/ping', (_req, res) => {
   res.send('<h1>Pong</h1>').end();
+});
+
+app.get('/api/diagnoses', (_req, res) => {
+  res.json(getAllDiagnoses());
+});
+
+app.get('/api/patients', (_req, res) => {
+  res.json(getAllPatients());
 });
 
 const PORT = 3001;
